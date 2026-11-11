@@ -8,7 +8,7 @@ steps:
       - "--build-arg"
       - "VITE_API_URL=${_VITE_API_URL}"
       - "-t"
-      - "gcr.io/$PROJECT_ID/gold-admin-panel:latest"
+      - "gcr.io/$PROJECT_ID/fabric-admin-panel:latest"
       - "."
     dir: "."
 
@@ -17,12 +17,12 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "push"
-      - "gcr.io/$PROJECT_ID/gold-admin-panel:latest"
+      - "gcr.io/$PROJECT_ID/fabric-admin-panel:latest"
 
 # Store images in Container Registry
 images:
 
-  - "gcr.io/$PROJECT_ID/gold-admin-panel:latest"
+  - "gcr.io/$PROJECT_ID/fabric-admin-panel:latest"
 
 # Substitution variables (set these when triggering the build)
 substitutions:

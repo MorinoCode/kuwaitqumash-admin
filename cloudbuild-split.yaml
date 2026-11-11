@@ -17,16 +17,16 @@ steps:
     args: [
       'build', 
       '-f', 'Dockerfile.simple',
-      '-t', 'gcr.io/$PROJECT_ID/gold-admin-panel:latest', 
+      '-t', 'gcr.io/$PROJECT_ID/fabric-admin-panel:latest', 
       '.'
     ]
 
   # 4. Push to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/gold-admin-panel:latest']
+    args: ['push', 'gcr.io/$PROJECT_ID/fabric-admin-panel:latest']
 
 images:
-  - 'gcr.io/$PROJECT_ID/gold-admin-panel:latest'
+  - 'gcr.io/$PROJECT_ID/fabric-admin-panel:latest'
 
 substitutions:
   _VITE_API_URL: "https://your-backend-url.run.app"
