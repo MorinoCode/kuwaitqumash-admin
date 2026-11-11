@@ -258,7 +258,7 @@ export default function TenantDetailPage() {
                   <th>ID</th>
                   <th>Name</th>
                   <th>Phone</th>
-                  <th>Civil ID</th>
+                  <th>Type</th>
                 </tr>
               </thead>
               <tbody>
@@ -267,7 +267,7 @@ export default function TenantDetailPage() {
                     <td>{c.id}</td>
                     <td>{c.full_name}</td>
                     <td>{c.phone}</td>
-                    <td>{c.civil_id || "—"}</td>
+                    <td>{c.type || "—"}</td>
                   </tr>
                 ))}
               </tbody>
