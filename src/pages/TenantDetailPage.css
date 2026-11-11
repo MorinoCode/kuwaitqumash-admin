@@ -1,0 +1,104 @@
+.tenant-detail {
+  padding: 1.5rem;
+}
+.tenant-detail__header {
+  margin-bottom: 1rem;
+}
+.tenant-detail__back {
+  color: #e94560;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+.tenant-detail__back:hover {
+  text-decoration: underline;
+}
+.tenant-detail__header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  color: #1a1a2e;
+}
+.tenant-detail__header h1 small {
+  font-weight: normal;
+  color: #666;
+  font-size: 1rem;
+}
+.tenant-detail__meta {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+.tenant-detail__tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+.tenant-detail__tab {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.tenant-detail__tab--active {
+  background: #0f3460;
+  color: #fff;
+  border-color: #0f3460;
+}
+.tenant-detail__content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.tenant-detail__add {
+  background: #e94560;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+.tenant-detail__add:hover {
+  background: #ff6b6b;
+}
+.tenant-detail__table-wrap {
+  overflow: auto;
+}
+.tenant-detail__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tenant-detail__table th,
+.tenant-detail__table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.tenant-detail__table th {
+  background: #f8f8f8;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.tenant-detail__btn {
+  background: #0f3460;
+  color: #fff;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 0.25rem;
+}
+.tenant-detail__btn:hover {
+  background: #16213e;
+}
+.tenant-detail__btn--danger {
+  background: #c82333;
+}
+.tenant-detail__btn--danger:hover {
+  background: #bd2130;
+}

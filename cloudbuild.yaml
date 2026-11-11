@@ -1,0 +1,35 @@
+
+# Google Cloud Build configuration for Admin Panel
+steps:
+  # Build Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "--build-arg"
+      - "VITE_API_URL=${_VITE_API_URL}"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/gold-admin-panel:latest"
+      - "."
+    dir: "."
+
+
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/gold-admin-panel:latest"
+
+# Store images in Container Registry
+images:
+
+  - "gcr.io/$PROJECT_ID/gold-admin-panel:latest"
+
+# Substitution variables (set these when triggering the build)
+substitutions:
+  _VITE_API_URL: "https://your-backend-url.run.app"
+
+options:
+  machineType: "E2_HIGHCPU_8"
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: "1200s"
