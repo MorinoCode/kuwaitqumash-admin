@@ -195,9 +195,9 @@ export default function TenantDetailPage() {
                 <tr>
                   <th>ID</th>
                   <th>Item</th>
-                  <th>Metal</th>
-                  <th>Karat</th>
-                  <th>Weight</th>
+                  <th>Fabric</th>
+                  <th>Pattern</th>
+                  <th>Meters</th>
                   <th>Quantity</th>
                   <th>Branch</th>
                 </tr>
@@ -207,9 +207,9 @@ export default function TenantDetailPage() {
                   <tr key={i.id}>
                     <td>{i.id}</td>
                     <td>{i.item_name || i.item_name_ar || "—"}</td>
-                    <td>{i.metal_type}</td>
-                    <td>{i.karat}</td>
-                    <td>{i.weight}</td>
+                    <td>{i.fabric_type || "—"}</td>
+                    <td>{i.pattern || "—"}</td>
+                    <td>{i.length_m ?? "—"}</td>
                     <td>{i.quantity}</td>
                     <td>{i.branch_id}</td>
                   </tr>
