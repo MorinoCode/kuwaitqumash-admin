@@ -1,8 +1,10 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL}/api/admin`
-  : "http://localhost:5000/api/admin";
+const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001";
+const cleanApiUrl = rawApiUrl
+  .replace(/\/+$/, "")
+  .replace(/\/api(?:\/admin)?$/, "");
+const baseURL = `${cleanApiUrl}/api/admin`;
 
 export const api = axios.create({
   baseURL,

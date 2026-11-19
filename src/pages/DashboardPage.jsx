@@ -6,16 +6,24 @@ import "./DashboardPage.css";
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const [stats, setStats] = useState({ tenants: 0 });
+  const [stats, setStats] = useState({ tenants: 0, messages: 0, newMessages: 0 });
 
   useEffect(() => {
-    api
-      .get("/tenants")
-      .then((res) => {
-        const list = res.data?.data ?? [];
-        setStats({ tenants: list.length });
-      })
-      .catch(() => {});
+    Promise.allSettled([
+      api.get("/tenants"),
+      api.get("/contact-messages"),
+    ]).then(([tenantsRes, messagesRes]) => {
+      const tenantList =
+        tenantsRes.status === "fulfilled" ? tenantsRes.value.data?.data ?? [] : [];
+      const messageList =
+        messagesRes.status === "fulfilled" ? messagesRes.value.data?.data ?? [] : [];
+      const newCount = messageList.filter((m) => m.status === "new").length;
+      setStats({
+        tenants: tenantList.length,
+        messages: messageList.length,
+        newMessages: newCount,
+      });
+    });
   }, []);
 
   return (
@@ -28,6 +36,12 @@ export default function DashboardPage() {
         <Link to="/tenants" className="admin-dashboard__card">
           <span className="admin-dashboard__card__number">{stats.tenants}</span>
           <span className="admin-dashboard__card__label">Tenants</span>
+        </Link>
+        <Link to="/messages" className="admin-dashboard__card">
+          <span className="admin-dashboard__card__number">{stats.newMessages}</span>
+          <span className="admin-dashboard__card__label">
+            New Account Requests {stats.messages > 0 ? `(${stats.messages} total)` : ""}
+          </span>
         </Link>
       </div>
     </div>

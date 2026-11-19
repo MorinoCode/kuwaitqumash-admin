@@ -3,17 +3,19 @@ import { useParams, Link } from "react-router-dom";
 import { api } from "../api/axios";
 import "./TenantDetailPage.css";
 
-const TABS = ["branches", "inventory", "invoices", "customers"];
+const TABS = ["branches", "users", "inventory", "invoices", "customers"];
 
 export default function TenantDetailPage() {
   const { id } = useParams();
   const [tenant, setTenant] = useState(null);
   const [tab, setTab] = useState("branches");
   const [branches, setBranches] = useState([]);
+  const [users, setUsers] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [invoices, setInvoices] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [branchModal, setBranchModal] = useState(null);
   const [branchForm, setBranchForm] = useState({
     name: "",
@@ -21,12 +23,26 @@ export default function TenantDetailPage() {
     phone: "",
   });
   const [saving, setSaving] = useState(false);
+  const [userPwdModal, setUserPwdModal] = useState(null);
+
+  const generateRandomPassword = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
+    let pwd = "";
+    for (let i = 0; i < 10; i++) {
+      pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pwd;
+  };
 
   useEffect(() => {
+    setError("");
     api
       .get(`/tenants/${id}`)
       .then((res) => setTenant(res.data?.data))
-      .catch(() => setTenant(null))
+      .catch((err) => {
+        setTenant(null);
+        setError(err.response?.data?.message || "Failed to load tenant details.");
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -37,6 +53,11 @@ export default function TenantDetailPage() {
         .get(`/tenants/${id}/branches`)
         .then((res) => setBranches(res.data?.data ?? []))
         .catch(() => setBranches([]));
+    } else if (tab === "users") {
+      api
+        .get(`/tenants/${id}/users`)
+        .then((res) => setUsers(res.data?.data ?? []))
+        .catch(() => setUsers([]));
     } else if (tab === "inventory") {
       api
         .get(`/tenants/${id}/inventory?limit=100`)
@@ -99,10 +120,53 @@ export default function TenantDetailPage() {
     }
   };
 
-  if (loading || !tenant) {
+  const handleUpdateUserPassword = async (e) => {
+    e.preventDefault();
+    if (!userPwdModal?.password || userPwdModal.password.length < 6) {
+      setUserPwdModal((p) => ({
+        ...p,
+        error: "Password must be at least 6 characters.",
+      }));
+      return;
+    }
+    setUserPwdModal((p) => ({ ...p, saving: true, error: "", success: "" }));
+    try {
+      await api.put(`/tenants/${id}/users/${userPwdModal.user.id}/password`, {
+        password: userPwdModal.password,
+      });
+      setUserPwdModal((p) => ({
+        ...p,
+        saving: false,
+        success: `Password for ${userPwdModal.user.username} successfully updated!`,
+      }));
+    } catch (err) {
+      setUserPwdModal((p) => ({
+        ...p,
+        saving: false,
+        error: err.response?.data?.message || "Failed to update password.",
+      }));
+    }
+  };
+
+  if (loading) {
     return (
       <div className="tenant-detail">
         <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (error || !tenant) {
+    return (
+      <div className="tenant-detail">
+        <div className="tenant-detail__header">
+          <Link to="/tenants" className="tenant-detail__back">
+            ← Tenants
+          </Link>
+          <p style={{ marginTop: "1.5rem", color: "#d32f2f", fontWeight: 500 }}>
+            {error || "Store not found or failed to load."}
+          </p>
+        </div>
       </div>
     );
   }
@@ -186,6 +250,65 @@ export default function TenantDetailPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+        {tab === "users" && (
+          <div className="tenant-detail__table-wrap">
+            <table className="tenant-detail__table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Full Name</th>
+                  <th>Role</th>
+                  <th>Branch</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.id}>
+                    <td>{u.id}</td>
+                    <td>
+                      <code>{u.username}</code>
+                    </td>
+                    <td>{u.full_name || "—"}</td>
+                    <td>
+                      <span className="tenants-table__status tenants-table__status--active">
+                        {u.role}
+                      </span>
+                    </td>
+                    <td>{u.branch?.name || "—"}</td>
+                    <td>{u.is_active ? "Active" : "Inactive"}</td>
+                    <td>
+                      {u.createdAt
+                        ? new Date(u.createdAt).toLocaleDateString()
+                        : "—"}
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="tenant-detail__btn tenant-detail__btn--pwd"
+                        onClick={() =>
+                          setUserPwdModal({
+                            user: u,
+                            password: "",
+                            saving: false,
+                            error: "",
+                            success: "",
+                          })
+                        }
+                      >
+                        Change Password
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {users.length === 0 && <p>No users found for this store.</p>}
           </div>
         )}
         {tab === "inventory" && (
@@ -316,6 +439,103 @@ export default function TenantDetailPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {userPwdModal && (
+        <div className="tenants-modal" onClick={() => setUserPwdModal(null)}>
+          <div
+            className="tenants-modal__box"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2>Change Password: {userPwdModal.user.username}</h2>
+            <p
+              style={{
+                margin: "0 0 1rem",
+                color: "#666",
+                fontSize: "0.9rem",
+              }}
+            >
+              User:{" "}
+              <strong>
+                {userPwdModal.user.full_name || userPwdModal.user.username}
+              </strong>{" "}
+              (Role: {userPwdModal.user.role})
+            </p>
+            {userPwdModal.success ? (
+              <div>
+                <div
+                  style={{
+                    background: "#d4edda",
+                    color: "#155724",
+                    padding: "0.75rem",
+                    borderRadius: "6px",
+                    marginBottom: "1rem",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  ✓ {userPwdModal.success}
+                </div>
+                <div className="tenants-modal__actions">
+                  <button type="button" onClick={() => setUserPwdModal(null)}>
+                    Close
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleUpdateUserPassword}>
+                <label style={{ fontSize: "0.85rem", color: "#555" }}>
+                  New Password:
+                </label>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <input
+                    type="text"
+                    required
+                    minLength={6}
+                    placeholder="Enter new password (min 6 chars)"
+                    value={userPwdModal.password}
+                    onChange={(e) =>
+                      setUserPwdModal((p) => ({
+                        ...p,
+                        password: e.target.value,
+                        error: "",
+                      }))
+                    }
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setUserPwdModal((p) => ({
+                        ...p,
+                        password: generateRandomPassword(),
+                        error: "",
+                      }))
+                    }
+                    style={{
+                      padding: "0.5rem 0.75rem",
+                      fontSize: "0.85rem",
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Generate
+                  </button>
+                </div>
+                {userPwdModal.error && (
+                  <p className="tenants-modal__error">{userPwdModal.error}</p>
+                )}
+                <div className="tenants-modal__actions">
+                  <button type="button" onClick={() => setUserPwdModal(null)}>
+                    Cancel
+                  </button>
+                  <button type="submit" disabled={userPwdModal.saving}>
+                    {userPwdModal.saving ? "Saving..." : "Save Password"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

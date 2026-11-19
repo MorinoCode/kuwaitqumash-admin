@@ -89,6 +89,12 @@
 .tenants-table__btn--danger:hover {
   background: #bd2130;
 }
+.tenants-table__btn--pwd {
+  background: #e67e22;
+}
+.tenants-table__btn--pwd:hover {
+  background: #d35400;
+}
 .tenants-modal {
   position: fixed;
   inset: 0;

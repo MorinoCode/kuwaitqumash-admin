@@ -33,6 +33,14 @@ export default function Layout({ children }) {
           >
             Tenants
           </NavLink>
+          <NavLink
+            to="/messages"
+            className={({ isActive }) =>
+              "admin-sidebar__link" + (isActive ? " active" : "")
+            }
+          >
+            Account Requests
+          </NavLink>
         </nav>
         <div className="admin-sidebar__footer">
           <span className="admin-sidebar__user">{user?.email}</span>

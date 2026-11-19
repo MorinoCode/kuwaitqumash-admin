@@ -102,3 +102,72 @@
 .tenant-detail__btn--danger:hover {
   background: #bd2130;
 }
+.tenant-detail__btn--pwd {
+  background: #e67e22;
+}
+.tenant-detail__btn--pwd:hover {
+  background: #d35400;
+}
+.tenants-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.tenants-modal__box {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  min-width: 340px;
+  max-width: 90vw;
+}
+.tenants-modal__box h2 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+.tenants-modal__box form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.tenants-modal__box input,
+.tenants-modal__box select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.tenants-modal__error {
+  color: #c82333;
+  margin: 0;
+  font-size: 0.9rem;
+}
+.tenants-modal__actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+.tenants-modal__actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+}
+.tenants-modal__actions button[type="submit"] {
+  background: #e94560;
+  color: #fff;
+  border-color: #e94560;
+}
+.tenants-table__status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+.tenants-table__status--active {
+  background: #d4edda;
+  color: #155724;
+}
