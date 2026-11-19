@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:5001";
+const rawApiUrl =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? "https://152.70.24.75.nip.io" : "http://localhost:5001");
 const cleanApiUrl = rawApiUrl
   .replace(/\/+$/, "")
   .replace(/\/api(?:\/admin)?$/, "");
