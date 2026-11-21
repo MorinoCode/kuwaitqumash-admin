@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { api } from "../api/axios";
 
 const AuthContext = createContext(null);
@@ -25,21 +25,26 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const login = (token) => {
+  const login = useCallback((token) => {
     localStorage.setItem("admin_token", token);
     return api.get("/me").then((res) => {
       setUser(res.data?.data ?? null);
     });
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem("admin_token");
     setUser(null);
     api.post("/logout").catch(() => {});
-  };
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({ user, loading, login, logout }),
+    [user, loading, login, logout],
+  );
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
